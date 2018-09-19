@@ -1,12 +1,12 @@
 import tweepy
-from tweepy import OAuthHandler
-import json
+import sys
 import wget
 import os
 import subprocess
 import io
 import shutil
 import fnmatch
+from tweepy import OAuthHandler
 from google.cloud import vision
 from google.cloud.vision import types
 from PIL import Image, ImageDraw, ImageFont
@@ -24,12 +24,22 @@ api = tweepy.API(auth)
 if(api.verify_credentials):
     print('logged in')
 
+d=sys.argv[1]
+t=sys.argv[2]
+n=sys.argv[3]
 
-A='SelenaActivity'
+int_n = int(n)
 
-tweets = api.user_timeline(screen_name='SelenaActivity',
-                           count=13, include_rts=False,
-                           exclude_replies=True)
+#== very important
+if d == '@username':
+    
+    tweets = api.user_timeline(screen_name=t,
+                               count=int_n, include_rts=False,
+                               exclude_replies=True)
+
+elif d == '#hashtag':
+    
+    tweets = tweepy.Cursor(api.search,t,include_rts=False,lang="en").items(int_n)
 
 tweets_pic=[]
 
@@ -75,14 +85,16 @@ for i,filename in enumerate(os.listdir(os.getcwd())):
 
         #pic.save('B'+'{0:03}'.format(i)+'.jpg')
         pic.save('B{0:03}.jpg'.format(i))
-subprocess.call('ffmpeg.exe -framerate 1 -f image2 -i B%03d.jpg '+A+'.avi',shell=True)
+        
+subprocess.call('ffmpeg.exe -framerate 1 -f image2 -i B%03d.jpg '+t+'.avi',shell=True)
 
-newpath = os.getcwd()+'\\'+A
+newpath = os.getcwd()+'\\'+t
 if not os.path.exists(newpath):
     os.makedirs(newpath)
 
 for filename in os.listdir(os.getcwd()):
     if filename.endswith('.jpg'):
         shutil.move(filename, newpath)
+
 
 
