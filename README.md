@@ -1,7 +1,7 @@
 # TwitterAPI Graphic Downloader
 made by Haotian
 
-In the dir use cmd:python Twitter_miniproject.py username count
+In the MiniProject_1 dir use cmd:python Twitter_miniproject.py username count
 
 username = the screen_name of the twitter user that you wanna type
 
